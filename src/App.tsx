@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import axios from "axios";
+type UserType = {
+  id: string,
+  name: string
+}
+const App = () => {
+  const [users, setUsers] = useState<UserType[]>([])
+  const getUser = () => {
+    axios.get(`http://localhost:3000/users`).then((res) => setUsers(res.data))
+  }
+  useEffect(() => {
+    getUser()
+  }, [])
+  const createUser = () => {
+    axios.post(`http://localhost:3000/users`).then(() => {
+      getUser()
+    })
+  }
+  return(
+    <>
+      <button onClick={createUser}>create</button>
+    <div>{users.map((user) => {
+      return <div key={user.id}>{user.name}</div>
+    })}</div></>
+  )
 }
 
 export default App;
